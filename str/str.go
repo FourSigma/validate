@@ -1,6 +1,7 @@
 package str
 
 import "fmt"
+import . "github.com/FourSigma/validate/misc/err"
 
 func NewStr(s string, sh []Handler) *Str {
 
@@ -18,13 +19,6 @@ type Str struct {
 	h []Handler
 }
 
-type TerminateLoop struct {
-	Name string
-}
-
-func (t TerminateLoop) Error() string {
-	return fmt.Sprintf("Loop terminated by %s", t.Name)
-}
 func (s *Str) Check() error {
 	for i, v := range s.h {
 		err := v(s.s)
