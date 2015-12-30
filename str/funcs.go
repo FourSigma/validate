@@ -60,7 +60,7 @@ func ContainsAll(substrs ...string) Handler {
 	return func(s string) error {
 		for _, v := range substrs {
 			if ok := strings.Contains(s, v); !ok {
-				return fmt.Errorf("Substring %s not found.", v)
+				return fmt.Errorf("SubString %s not found.", v)
 			}
 		}
 		return nil
@@ -97,7 +97,7 @@ func HasPrefix(prefix string) Handler {
 	}
 }
 
-func MustMatchRegexp(r string) Handler {
+func Regexp(r string) Handler {
 
 	return func(s string) error {
 		m, err := regexp.MatchString(r, s)

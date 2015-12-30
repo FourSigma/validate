@@ -11,12 +11,9 @@ var StringTests = []struct {
 	shouldpass bool
 }{
 	{
-		id: "API_Test",
-		s:  "Hel",
-		h: []str.Handler{
-			str.MinLen(4),
-			str.MaxLen(5),
-		},
+		id:         "API_Test",
+		s:          "Hello",
+		h:          []str.Handler{},
 		shouldpass: true,
 	},
 }
@@ -29,7 +26,6 @@ func TestString(t *testing.T) {
 		if err != nil {
 			v.didpass = false
 			t.Log(v.id, "Failed")
-
 		}
 	}
 
