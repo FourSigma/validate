@@ -9,6 +9,7 @@ type Validator interface {
 }
 
 type Transformer interface {
+	Validator
 	Transform() error
 }
 
