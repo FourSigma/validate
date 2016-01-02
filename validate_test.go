@@ -13,7 +13,7 @@ var APITests = []struct {
 }{
 
 	{
-		id:         "Empty Hanlder Test -- Pass",
+		id:         "Empty Handler Test -- Pass",
 		s:          "Hello",
 		h:          []str.Handler{},
 		shouldpass: true,
@@ -28,6 +28,24 @@ var APITests = []struct {
 		id:         "Single Handler Test -- Fail",
 		s:          "Hello",
 		h:          []str.Handler{str.MaxLen(2)},
+		shouldpass: false,
+	},
+	{
+		id:         "Multiple Handlers Test -- Pass",
+		s:          "Hello",
+		h:          []str.Handler{str.MaxLen(5), str.MaxLen(5)},
+		shouldpass: true,
+	},
+	{
+		id:         "Multiple Handlers Test -- Fail",
+		s:          "Hello",
+		h:          []str.Handler{str.MaxLen(2), str.MaxLen(5)},
+		shouldpass: false,
+	},
+	{
+		id:         "Multiple Handlers Test -- Fail",
+		s:          "Hello",
+		h:          []str.Handler{str.MaxLen(5), str.MaxLen(2)},
 		shouldpass: false,
 	},
 }
