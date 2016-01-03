@@ -2,7 +2,7 @@ package validate
 
 import "github.com/FourSigma/validate/str"
 
-type String string
+type String []byte
 
 func (s String) Validate(fn ...str.Handler) *str.Str {
 	return str.NewChkStr(string(s), fn)

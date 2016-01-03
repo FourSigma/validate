@@ -14,12 +14,15 @@ func NewChkStr(s string, sh []Handler) *Str {
 
 }
 
-func NewTransStr(s string, sh []TransHandler) *TransStr {
+func NewTransStr(s []byte, sh []TransHandler) *TransStr {
 	t := make([]TransHandler, len(sh))
 	copy(t, sh)
+
+	tb := make([]byte, len(s))
+	copy(tb, s)
 	return &TransStr{
-		s:  &s,
-		cp: s,
+		b:  s,
+		cp: tb,
 		h:  t,
 	}
 
@@ -57,19 +60,19 @@ func (s *Str) Finally(a ...Handler) *Str {
 	return s
 }
 
-type TransHandler func(*string) error //Not cocurrent safe
+type TransHandler func([]byte) error //Not cocurrent safe
 
 type TransStr struct {
-	s  *string
-	cp string //orignal copy of string
+	b  []byte
+	cp []byte
 	h  []TransHandler
 }
 
 func (s *TransStr) Transform() error {
 	for _, v := range s.h {
-		err := v(s.s)
+		err := v(s.b)
 		if err != nil {
-			*s.s = s.cp
+			s.b = s.cp
 			if _, ok := err.(TerminateLoop); ok {
 				fmt.Println("Loop Terminated")
 				break
