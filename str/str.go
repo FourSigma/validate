@@ -1,6 +1,9 @@
 package str
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 import . "github.com/FourSigma/validate/misc/err"
 
 func NewStr(s string, sh []Handler) *Str {
@@ -14,8 +17,6 @@ func NewStr(s string, sh []Handler) *Str {
 }
 
 type Handler func(string) error
-type Transformer func(*string) error //Not cocurrent safe
-//type Validator func() []Handler
 
 type Str struct {
 	s string
@@ -43,6 +44,41 @@ func (s *Str) Add(b ...Handler) *Str {
 }
 
 func (s *Str) Finally(a ...Handler) *Str {
+	s.h = append(s.h, a...)
+	return s
+}
+
+type TransHandler func(*string) error //Not cocurrent safe
+
+type TransStr struct {
+	s  *string
+	cp string
+	h  []TransHandler
+	sync.Mutex
+}
+
+func (s *TransStr) Transform() error {
+	s.cp = *s.s
+	for _, v := range s.h {
+		err := v(s.s)
+		if err != nil {
+			*s.s = s.cp
+			if _, ok := err.(TerminateLoop); ok {
+				fmt.Println("Loop Terminated")
+				break
+			}
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *TransStr) Add(b ...TransHandler) *TransStr {
+	s.h = append(b, s.h...)
+	return s
+}
+
+func (s *TransStr) Finally(a ...TransHandler) *TransStr {
 	s.h = append(s.h, a...)
 	return s
 }
