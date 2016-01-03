@@ -39,7 +39,6 @@ func Required(s string) error {
 
 func MaxLen(i int) Handler {
 	return func(s string) error {
-		fmt.Println("IN MAXLEN")
 		if len(s) > i {
 			return fmt.Errorf("String %s excedes maximum length of %d.", s, i)
 		}

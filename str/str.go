@@ -1,17 +1,26 @@
 package str
 
-import (
-	"fmt"
-	"sync"
-)
+import "fmt"
+
 import . "github.com/FourSigma/validate/misc/err"
 
-func NewStr(s string, sh []Handler) *Str {
+func NewChkStr(s string, sh []Handler) *Str {
 	t := make([]Handler, len(sh))
 	copy(t, sh)
 	return &Str{
 		s: s,
 		h: t,
+	}
+
+}
+
+func NewTransStr(s string, sh []TransHandler) *TransStr {
+	t := make([]TransHandler, len(sh))
+	copy(t, sh)
+	return &TransStr{
+		s:  &s,
+		cp: s,
+		h:  t,
 	}
 
 }
@@ -52,13 +61,11 @@ type TransHandler func(*string) error //Not cocurrent safe
 
 type TransStr struct {
 	s  *string
-	cp string
+	cp string //orignal copy of string
 	h  []TransHandler
-	sync.Mutex
 }
 
 func (s *TransStr) Transform() error {
-	s.cp = *s.s
 	for _, v := range s.h {
 		err := v(s.s)
 		if err != nil {
