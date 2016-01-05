@@ -2,12 +2,24 @@ package validate
 
 import "github.com/FourSigma/validate/str"
 
-type String []byte
-
-func (s String) Validate(fn ...str.Handler) *str.Str {
-	return str.NewChkStr(string(s), fn)
+type stng struct {
+	t *str.TransStr //TransStr
+	s *str.Str      //Checker
 }
 
-func (s String) Transform(fn ...str.TransHandler) *str.TransStr {
-	return str.NewTransStr(s, fn)
+func (s stng) Validate(fn ...str.Handler) *str.Str {
+	s.s.Add(fn...)
+	return s.s
+}
+
+func (s *stng) Transform(fn ...str.TransHandler) *str.TransStr {
+	s.t.Add(fn...)
+	return s.t
+}
+
+func String(s *string) *stng {
+	return &stng{
+		s: str.NewChkStr(*s, nil),
+		t: str.NewTransStr(s, nil),
+	}
 }
