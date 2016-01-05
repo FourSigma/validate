@@ -20,7 +20,8 @@ func(p Person) OK() (err error){
 
 }
 
-func email(s string) error {
+//
+func EMail(s string) error {
 	_, err := mail.ParseAddress(s)
 	return err
 }
