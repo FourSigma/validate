@@ -21,12 +21,12 @@ func(p Person) OK() (err error){
  // API Overview
  
   err = Check(
-    String(p.Email).Validate(EMail),         //Validate takes variadic paramerters Validate(fn ...str.Handler)
-    String(p.StateName).Validate(MaxLen(2), MinLen(2)) 
-    String(p.FirstName).Validate(Name...),  //More complex validations can be aggregated into a slice
-    String(p.LastName).Validate(Name...).Add(RunFirst...),       //  Add  - Runs before Name
-    String(p.MiddleName).Validate(Name...).Finally(RunLast...), //Finally - Runs after Name
-    String(p.ID).Validate(Id...).Required(), //ID cannot be blank
+    String(&p.Email).Validate(EMail),         //Validate takes variadic paramerters Validate(fn ...str.Handler)
+    String(&p.StateName).Validate(MaxLen(2), MinLen(2)) 
+    String(&p.FirstName).Validate(Name...),  //More complex validations can be aggregated into a slice
+    String(&p.LastName).Validate(Name...).Add(RunFirst...),       //  Add  - Runs before Name
+    String(&p.MiddleName).Validate(Name...).Finally(RunLast...), //Finally - Runs after Name
+    String(&p.ID).Validate(Id...).Required(), //ID cannot be blank
   )
 
 }

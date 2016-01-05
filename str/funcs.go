@@ -8,6 +8,16 @@ import (
 	e "github.com/FourSigma/validate/misc/err"
 )
 
+type CheckError struct {
+	Name  string
+	Err   error
+	Value string
+}
+
+func (c CheckError) Error() string {
+	return fmt.Sprintf("ERROR: %s - %s - %s", c.Name, c.Err, c.Value)
+}
+
 func And(sh ...Handler) Handler {
 	return func(s string) error {
 		for _, v := range sh {
