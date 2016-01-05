@@ -18,11 +18,11 @@ type Person struct{
 
 func(p Person) OK() (err error){
   err = Check(
-    String(p.Email).Validate(EMail),
-    String(p.StateName).Validate(MaxLen(2), MinLen(2)) //Validate takes variadic paramerters
+    String(p.Email).Validate(EMail),  //Validate takes variadic paramerters Validate(fn ...str.Handler)
+    String(p.StateName).Validate(MaxLen(2), MinLen(2)) 
     String(p.FirstName).Validate(Name...),  //More complex validations can be aggreated into slices
-    String(p.LastName).Validate(Name...).Add(MaxLen(40)), //Runs MaxLen(40) first
-    String(p.MiddleName).Validate(Name...).Finally(MaxLen(40)) //Runs MaxLen(40) last
+    String(p.LastName).Validate(Name...).Add(RunFirst...), // Runs before Name
+    String(p.MiddleName).Validate(Name...).Finally(RunLast...) //Runs after Name
   )
 
 }
