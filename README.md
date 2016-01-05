@@ -1,7 +1,6 @@
 Validate 
 ========
-Validate is a **functional**, **type safe**, **flexible**, and **simple** approach to string validation and transformation for the Go programming language.  
-
+Validate is a **functional**, **type safe**, **flexible**, and **simple** approach to string validation and transformation for the Go programming language.   Unlike
 ```go
 
 import (
@@ -45,7 +44,8 @@ func MaxLen(i int) str.Handler {
 }
 
 ```
-
+#### Multiple string validations
+Aggreating handlers into slice can make complex validations easier, composable, and maintainable. Functions are evaluated in the order.   
 ```go
 // You can create []str.Handler for multiple validations.
 var Name = []str.Handler{MaxLen(14), MinLen(2)}
