@@ -1,6 +1,6 @@
 Validate 
 ========
-Validate is a **functional**, **type safe**, **flexible**, and **simple** approach to string validation and transformation for the Go programming language.   Unlike other validation libraries that rely on struct field tags, Validate doesn't use reflection.  I have kept the small and simple.
+Validate is a **functional**, **type safe**, **flexible**, and **simple** approach to string validation and transformation for the Go programming language.   Unlike other validation libraries that rely on struct field tags, Validate doesn't use reflection.  I designed the API to be small, simple, and highly flexible.
 ```go
 
 import (
