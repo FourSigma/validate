@@ -5,6 +5,8 @@ Validate is a functional, type safe, flexible, and simple approach to string val
 
 ```go
 
+import "github.com/FourSigma/validate/str"
+	
 type Person struct{
   FirstName string
   LastName  string
