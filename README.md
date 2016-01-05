@@ -11,6 +11,14 @@ type Person struct{
   EMail     string
 }
 
+func(p Person) OK() error{
+  err := Check(
+    String(p.FirstName).Validate(Name...), 
+    String(p.LastName).Validate(Name...),
+    String(p.Email).Validate(EMail...),
+  )
+
+}
 
 ```
 
