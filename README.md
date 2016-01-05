@@ -24,7 +24,8 @@ func(p Person) OK() (err error){
 
 }
 ```
-## String Handler
+#### String Handler
+Write functions that either satisfy or return (function closures) a ```type Str.Handler func(string) error```
 ``` go
 //Write functions that are of type str.Handler ---> func(string) error
 func EMail(s string) error {
