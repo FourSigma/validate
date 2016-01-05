@@ -1,6 +1,6 @@
 Validate 
 ========
-Validate is a **functional**, **type safe**, **flexible**, and **simple** approach to string validation and transformation for the Go programming language.   Unlike
+Validate is a **functional**, **type safe**, **flexible**, and **simple** approach to string validation and transformation for the Go programming language.   Unlike other validation libraries that rely on struct field tags, Validate doesn't use reflection.  I have kept the small and simple.
 ```go
 
 import (
@@ -18,12 +18,14 @@ type Person struct{
 }
 
 func(p Person) OK() (err error){
+ // API Overview
+ 
   err = Check(
-    String(p.Email).Validate(EMail),  //Validate takes variadic paramerters Validate(fn ...str.Handler)
+    String(p.Email).Validate(EMail),         //Validate takes variadic paramerters Validate(fn ...str.Handler)
     String(p.StateName).Validate(MaxLen(2), MinLen(2)) 
-    String(p.FirstName).Validate(Name...),  //More complex validations can be aggreated into slices
-    String(p.LastName).Validate(Name...).Add(RunFirst...), // Runs before Name
-    String(p.MiddleName).Validate(Name...).Finally(RunLast...), //Runs after Name
+    String(p.FirstName).Validate(Name...),  //More complex validations can be aggregated into a slice
+    String(p.LastName).Validate(Name...).Add(RunFirst...),       //  Add  - Runs before Name
+    String(p.MiddleName).Validate(Name...).Finally(RunLast...), //Finally - Runs after Name
     String(p.ID).Validate(Id...).Required(), //ID cannot be blank
   )
 
@@ -51,7 +53,7 @@ func MaxLen(i int) str.Handler {
 
 ```
 #### Multiple string validations
-Aggreating handlers into slice can make complex validations easier, composable, and maintainable. Functions are evaluated in the order.   
+Aggreating handlers into slice can make complex validations easier, composable, and maintainable. Functions are evaluated in the order (0...len(slice)-1).   
 ```go
 // You can create []str.Handler for multiple validations.
 var Name = []str.Handler{MaxLen(14), MinLen(2)}
