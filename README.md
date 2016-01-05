@@ -25,15 +25,17 @@ func(p Person) OK() (err error){
 
 }
 
-//Satisfies str.Handler type ---> func(string) error
+//Write functions that are of type str.Handler ---> func(string) error
 func EMail(s string) error {
 	_, err := mail.ParseAddress(s)
 	return err
 }
 
-// str.Handler --> func(string) error
+// You can create []str.Handler for multiple validations.
 var Name = []str.Handler{MaxLen(14), MinLen(2)}
 
+//Use Go function closures that returns a str.Handler function
+//for more flexibiltiy.
 func MaxLen(i int) str.Handler {
 	return func(s string) error {
 		if len(s) > i {
