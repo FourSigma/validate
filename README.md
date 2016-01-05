@@ -1,6 +1,6 @@
 Validate 
 ========
-Validate is a *functional*, *type safe*, *flexible*, and *simple* approach to string validation and transformation for the Go programming language.  
+Validate is a **functional**, **type safe**, **flexible**, and **simple** approach to string validation and transformation for the Go programming language.  
 
 ```go
 
@@ -33,9 +33,6 @@ func EMail(s string) error {
 	return err
 }
 
-// You can create []str.Handler for multiple validations.
-var Name = []str.Handler{MaxLen(14), MinLen(2)}
-
 //Use Go function closures that returns a str.Handler function
 //for more flexibiltiy.
 func MaxLen(i int) str.Handler {
@@ -46,6 +43,13 @@ func MaxLen(i int) str.Handler {
 		return nil
 	}
 }
+
+```
+
+```go
+// You can create []str.Handler for multiple validations.
+var Name = []str.Handler{MaxLen(14), MinLen(2)}
+
 
 func MinLen(i int) str.Handler {
 	return func(s string) error {
