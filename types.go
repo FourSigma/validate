@@ -12,6 +12,11 @@ func (s stng) Validate(fn ...str.Handler) *str.Str {
 	return s.s
 }
 
+func (s *stng) Required() checker {
+	s.s.Required()
+	return s.s
+}
+
 func (s *stng) Transform(fn ...str.TransHandler) *str.TransStr {
 	s.t.Add(fn...)
 	return s.t

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	e "github.com/FourSigma/validate/misc/err"
 )
 
 func And(sh ...Handler) Handler {
@@ -37,6 +39,12 @@ func Required(s string) error {
 	return nil
 }
 
+func BlankOK(s string) error {
+	if s == "" {
+		return e.TerminateLoop{}
+	}
+	return nil
+}
 func MaxLen(i int) Handler {
 	return func(s string) error {
 		if len(s) > i {

@@ -2,13 +2,12 @@ package validate
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 )
 
 import "github.com/FourSigma/validate/str"
 
-var APITests = []struct {
+var CheckStringAPITests = []struct {
 	id         string
 	s          string
 	h          []str.Handler
@@ -54,8 +53,8 @@ var APITests = []struct {
 	},
 }
 
-func TestAPI(t *testing.T) {
-	for _, v := range APITests {
+func TestCheckStringAPI(t *testing.T) {
+	for _, v := range CheckStringAPITests {
 		err := Check(
 			String(&v.s).Validate(v.h...),
 		)
@@ -77,9 +76,72 @@ func ToUpper(b []byte) ([]byte, error) {
 func ToLower(b []byte) ([]byte, error) {
 	return bytes.ToLower(b), nil
 }
-func TestTransformAPI(t *testing.T) {
-	s := "Hello"
-	String(&s).Transform(ToLower, ToUpper, ToLower).Transform()
-	fmt.Println("NOW", s)
 
+var TransformStringAPITests = []struct {
+	id         string
+	s          string
+	expected   string
+	h          []str.TransHandler
+	didpass    bool
+	shouldpass bool
+}{
+
+	{
+		id:         "Empty Handler Test -- Pass",
+		s:          "hello",
+		expected:   "hello",
+		h:          []str.TransHandler{},
+		shouldpass: true,
+	},
+	{
+		id:         "Single Handler Test -- Pass",
+		s:          "hello",
+		expected:   "HELLO",
+		h:          []str.TransHandler{ToUpper},
+		shouldpass: true,
+	},
+	{
+		id:         "Multiple Handlers Test -- Pass",
+		s:          "hEllo",
+		expected:   "HELLO",
+		h:          []str.TransHandler{ToUpper, ToLower, ToUpper},
+		shouldpass: true,
+	},
+	{
+		id:         "Multiple Handlers Test -- Pass",
+		s:          "hEllo",
+		expected:   "HELLO",
+		h:          []str.TransHandler{ToLower, ToLower, ToUpper},
+		shouldpass: true,
+	},
+	{
+		id:         "Multiple Handlers Test -- Fail",
+		s:          "Hello",
+		expected:   "Hello",
+		h:          []str.TransHandler{ToUpper},
+		shouldpass: false,
+	},
+	{
+		id:         "Multiple Handlers Test -- Fail",
+		s:          "Hello",
+		expected:   "Hello",
+		h:          []str.TransHandler{ToUpper, ToLower},
+		shouldpass: false,
+	},
+}
+
+func TestTransformStringAPI(t *testing.T) {
+	for _, v := range TransformStringAPITests {
+		err := Transform(
+			String(&v.s).Transform(v.h...),
+		)
+		if err == nil {
+			if v.expected == v.s {
+				v.didpass = true
+			}
+		}
+		if v.shouldpass != v.didpass {
+			t.Errorf(v.id, "Failed")
+		}
+	}
 }

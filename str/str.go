@@ -1,6 +1,9 @@
 package str
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 import . "github.com/FourSigma/validate/misc/err"
 
@@ -17,17 +20,22 @@ func NewChkStr(s string, sh []Handler) *Str {
 type Handler func(string) error
 
 type Str struct {
-	s string
-	h []Handler
+	s        string
+	h        []Handler
+	required bool
 }
 
 func (s *Str) Check() error {
-	for i, v := range s.h {
+	if s.s == "" && s.required == true {
+		return errors.New("String value required.")
+	}
+	if s.s == "" && s.required == false {
+		return nil
+	}
+	for _, v := range s.h {
 		err := v(s.s)
-		fmt.Println("Error:", err, i)
 		if err != nil {
 			if _, ok := err.(TerminateLoop); ok {
-				fmt.Println("Loop Terminated")
 				break
 			}
 			return err
@@ -45,14 +53,20 @@ func (s *Str) Finally(a ...Handler) *Str {
 	s.h = append(s.h, a...)
 	return s
 }
+func (s *Str) Required() checker {
+	s.required = true
+	return s
+}
+
+type checker interface {
+	Check() error
+}
 
 type TransHandler func([]byte) ([]byte, error) //Not cocurrent safe
 
 func NewTransStr(s *string, sh []TransHandler) *TransStr {
-
 	t := make([]TransHandler, len(sh))
 	copy(t, sh)
-
 	return &TransStr{
 		o: s,
 		b: []byte(*s),

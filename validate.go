@@ -8,8 +8,7 @@ type Validator interface {
 	OK() error
 }
 
-type Transformer interface {
-	Validator
+type transformer interface {
 	Transform() error
 }
 
@@ -23,6 +22,12 @@ func Check(c ...checker) error {
 	return nil
 }
 
-//func Terminate(s string) error {
-//	return TerminateLoop{Name: "Terminate"}
-//}
+func Transform(c ...transformer) error {
+	for _, v := range c {
+		err := v.Transform()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
