@@ -13,7 +13,7 @@ type Person struct{
 
 func(p Person) OK() (err error){
   err = Check(
-    String(p.Email).Validate(EMail...),
+    String(p.Email).Validate(EMail),
     String(p.FirstName).Validate(Name...), 
     String(p.LastName).Validate(Name...),
   )
