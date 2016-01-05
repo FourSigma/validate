@@ -9,5 +9,5 @@ func (s String) Validate(fn ...str.Handler) *str.Str {
 }
 
 func (s String) Transform(fn ...str.TransHandler) *str.TransStr {
-	return str.NewTransStr(string(s), fn)
+	return str.NewTransStr(s, fn)
 }

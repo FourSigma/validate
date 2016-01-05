@@ -60,7 +60,7 @@ func (s *Str) Finally(a ...Handler) *Str {
 	return s
 }
 
-type TransHandler func([]byte) error //Not cocurrent safe
+type TransHandler func([]byte) ([]byte, error) //Not cocurrent safe
 
 type TransStr struct {
 	b  []byte
@@ -68,9 +68,9 @@ type TransStr struct {
 	h  []TransHandler
 }
 
-func (s *TransStr) Transform() error {
+func (s *TransStr) Transform() (err error) {
 	for _, v := range s.h {
-		err := v(s.b)
+		s.b, err = v(s.b)
 		if err != nil {
 			s.b = s.cp
 			if _, ok := err.(TerminateLoop); ok {
