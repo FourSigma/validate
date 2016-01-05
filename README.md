@@ -14,6 +14,7 @@ type Person struct{
   MiddleName string
   EMail      string
   State	     string
+  ID	     string
 }
 
 func(p Person) OK() (err error){
@@ -22,7 +23,8 @@ func(p Person) OK() (err error){
     String(p.StateName).Validate(MaxLen(2), MinLen(2)) 
     String(p.FirstName).Validate(Name...),  //More complex validations can be aggreated into slices
     String(p.LastName).Validate(Name...).Add(RunFirst...), // Runs before Name
-    String(p.MiddleName).Validate(Name...).Finally(RunLast...) //Runs after Name
+    String(p.MiddleName).Validate(Name...).Finally(RunLast...), //Runs after Name
+    String(p.ID).Validate(Id...).Required(), //ID cannot be blank
   )
 
 }
