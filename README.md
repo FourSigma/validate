@@ -20,14 +20,14 @@ func(p Person) OK() (err error){
 
 }
 
-//
+//Satisfies str.Handler type ---> func(string) error
 func EMail(s string) error {
 	_, err := mail.ParseAddress(s)
 	return err
 }
 
 // str.Handler --> func(string) error
-var Name = str.Handler{MaxLen(14), MinLen(2)}
+var Name = []str.Handler{MaxLen(14), MinLen(2)}
 
 func MaxLen(i int) str.Handler {
 	return func(s string) error {
