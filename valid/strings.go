@@ -14,6 +14,7 @@ func email(s string) error {
 
 func urlParse(s string) error {
 	_, err := url.Parse(s)
+
 	return err
 }
 

@@ -1,5 +1,7 @@
 package validate
 
+import "reflect"
+
 type checker interface {
 	Check() error
 }
@@ -10,6 +12,33 @@ type Validator interface {
 
 type transformer interface {
 	Transform() error
+}
+
+type okcheck struct {
+	vs []Validator
+}
+
+func (t okcheck) Check() error {
+
+	for _, v := range t.vs {
+		if val := reflect.ValueOf(v); val.IsNil() {
+			continue
+		}
+
+		err := v.OK()
+		if err != nil {
+			return err
+		}
+
+	}
+
+	return nil
+}
+
+func OKCheck(c ...Validator) *okcheck {
+	return &okcheck{
+		vs: c,
+	}
 }
 
 func Check(c ...checker) error {
