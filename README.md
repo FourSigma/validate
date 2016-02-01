@@ -51,14 +51,6 @@ func MaxLen(i int) str.Handler {
 	}
 }
 
-```
-#### Multiple string validations
-Aggreating handlers into slice can make complex validations easier, composable, and maintainable. Functions are evaluated in the order (0...len(slice)-1).   
-```go
-// You can create []str.Handler for multiple validations.
-var Name = []str.Handler{MaxLen(14), MinLen(2)}
-
-
 func MinLen(i int) str.Handler {
 	return func(s string) error {
 		if len(s) < i {
@@ -69,6 +61,28 @@ func MinLen(i int) str.Handler {
 }
 
 
+
+```
+#### Multiple string validations
+Aggreating handlers into slice can make complex validations easier, composable, and maintainable. Functions are evaluated in the order (0...len(slice)-1).   
+```go
+// You can create []str.Handler for multiple validations.
+var Name = []str.Handler{MaxLen(14), MinLen(2)}
+
+
+var LastName, FirstName string = "Gopher", "Programmer"
+
+//One way to check 
+err := String(&LastName).Validate(Name...).Check()
+//Return err here
+err = String(&FirstName).Validate(Name...).Check()
+//Return err here
+
+//OR use a better is to use the Check function
+err := Check(
+String(&LastName).Validate(Name...),
+String(&FirstName).Validate(Name...),
+)
 
 ```
 
