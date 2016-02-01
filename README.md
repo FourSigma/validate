@@ -86,3 +86,8 @@ String(&FirstName).Validate(Name...),
 
 ```
 
+References 
+========
+This library was heavily inspired from the following talk by Dave Cheney.
+http://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
+
