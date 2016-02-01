@@ -78,11 +78,11 @@ err := String(&LastName).Validate(Name...).Check()
 err = String(&FirstName).Validate(Name...).Check()
 //Return err here
 
-//OR use a better is to use the Check function
+//OR a better way it to use the Check function
 err := Check(
-String(&LastName).Validate(Name...),
-String(&FirstName).Validate(Name...),
-)
+	String(&LastName).Validate(Name...),
+	String(&FirstName).Validate(Name...),
+	)
 
 ```
 
