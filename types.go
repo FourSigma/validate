@@ -1,5 +1,10 @@
 package validate
 
+import (
+	"github.com/FourSigma/validate/lib"
+	"github.com/FourSigma/validate/str"
+)
+
 //import "github.com/FourSigma/validate/str"
 
 //type stng struct {
@@ -28,3 +33,7 @@ package validate
 //		t: str.NewTransStr(s, nil),
 //	}
 //;/}
+
+func String(s string) lib.Validator {
+	return str.NewStringValidator(&s)
+}

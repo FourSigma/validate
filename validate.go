@@ -1,13 +1,13 @@
 package validate
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/FourSigma/validate/lib"
+)
 
 type Checker interface {
 	Check() error
-}
-
-type Transformer interface {
-	Transform() error
 }
 
 func Check(c ...Checker) error {
@@ -20,34 +20,11 @@ func Check(c ...Checker) error {
 	return nil
 }
 
-func Transform(c ...Transformer) error {
-	for _, v := range c {
-		err := v.Transform()
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-type Validator interface {
-	Empty() bool
-	Check() error
-	Add(...Handler) Validator
-	Finally(...Handler) Validator
-	Name(string) Validator
-	Required() Validator
-}
-
-type Handler interface {
-	Handle(interface{}) error
-}
-
-func And(sh ...Handler) Handler {
+func And(sh ...lib.Handler) lib.Handler {
 	return and(sh)
 }
 
-type and []Handler
+type and []lib.Handler
 
 func (a and) Handle(i interface{}) error {
 	for _, v := range a {
@@ -60,11 +37,11 @@ func (a and) Handle(i interface{}) error {
 	return nil
 }
 
-func Or(sh ...Handler) Handler {
+func Or(sh ...lib.Handler) lib.Handler {
 	return or(sh)
 }
 
-type or []Handler
+type or []lib.Handler
 
 func (a or) Handle(i interface{}) error {
 	for _, v := range a {

@@ -4,13 +4,13 @@ import (
 	"errors"
 	"log"
 
-	"github.com/FourSigma/validate"
+	"github.com/FourSigma/validate/lib"
 	. "github.com/FourSigma/validate/misc/err"
 )
 
-type Handler func(*string) error
+type HandlerFunc func(*string) error
 
-func (s Handler) Handle(i interface{}) error {
+func (s HandlerFunc) Handle(i interface{}) error {
 	str, ok := i.(*string)
 	if !ok {
 		return errors.New("Something went wrong")
@@ -19,10 +19,14 @@ func (s Handler) Handle(i interface{}) error {
 	return s(str)
 }
 
+func NewStringValidator(s *string) *str {
+	return &str{s: s}
+}
+
 //Implementation of Validator interface for string primitives.
 type str struct {
 	s        *string
-	h        []StringHandler
+	h        []HandlerFunc
 	required bool
 
 	meta string
@@ -58,31 +62,31 @@ func (s *str) Check() error {
 	return nil
 }
 
-func (s *str) Add(b ...validate.Handler) *str {
-	s.h = append(getStringHandler(b...), s.h...)
+func (s *str) Add(b ...lib.Handler) lib.Validator {
+	s.h = append(getHandlerFunc(b...), s.h...)
 	return s
 }
 
-func (s *str) Finally(a ...Handler) *str {
-	s.h = append(s.h, getStringHandler(a...)...)
+func (s *str) Finally(a ...lib.Handler) lib.Validator {
+	s.h = append(s.h, getHandlerFunc(a...)...)
 	return s
 }
 
-func (s *str) Name(name string) *str {
+func (s *str) Name(name string) lib.Validator {
 	s.meta = name
 	return s
 }
 
-func (s *str) Required() *str {
+func (s *str) Required() lib.Validator {
 	s.required = true
 	return s
 }
 
 //Ignores non-string Handlers in the slice.
-func getStringHandler(list ...Handler) (rs []StringHandler) {
+func getHandlerFunc(list ...lib.Handler) (rs []HandlerFunc) {
 	for _, v := range list {
 		switch x := v.(type) {
-		case StringHandler:
+		case HandlerFunc:
 			rs = append(rs, x)
 		default:
 			continue
