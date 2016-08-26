@@ -6,11 +6,7 @@ import (
 	"github.com/FourSigma/validate/lib"
 )
 
-type Checker interface {
-	Check() error
-}
-
-func Check(c ...Checker) error {
+func Check(c ...lib.Checker) error {
 	for _, v := range c {
 		err := v.Check()
 		if err != nil {

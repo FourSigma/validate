@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/FourSigma/validate/str"
+	"github.com/FourSigma/validate/types/str"
 )
 
-var list []str.HandlerFunc
+var list = []str.HandlerFunc{}
 
 func TestCheckStringAPI(t *testing.T) {
 	list = append(list, func(s *string) error {
@@ -17,6 +17,8 @@ func TestCheckStringAPI(t *testing.T) {
 		}
 		return errors.New("Incorrect greeting!")
 	})
-	err := String("HELLO").Add(list...).Check()
+	list = append(list, list...)
+	st := "Hello"
+	err := str.String(&st, list...).Append().Check()
 	fmt.Println(err)
 }
