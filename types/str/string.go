@@ -22,19 +22,17 @@ func ToHandlers(list ...HandlerFunc) []lib.Handler {
 		rs[i] = lib.Handler(v)
 	}
 	return rs
-
 }
 
 func String(s *string, hf ...HandlerFunc) *str {
-	ss := &str{s: s, h: hf}
-	ss.Helper = lib.NewHelper(s, "String", ToHandlers(hf...)...)
+	ss := &str{s: s}
+	ss.Helper = lib.NewDefaultHelper(s, "String", ToHandlers(hf...)...)
 	return ss
 }
 
 //Implementation of Validator interface for string primitives.
 type str struct {
 	s *string
-	h []HandlerFunc
 	lib.Helper
 }
 

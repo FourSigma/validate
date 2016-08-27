@@ -9,10 +9,10 @@ type Checker interface {
 
 type Helper interface {
 	Checker
-	Value() interface{}
-	String() string
+	value() interface{}
+	getString() string
 	Name(string) Validator
-	IsRequired() bool
+	isRequired() bool
 	Required() Validator
 	GetHandlers() []Handler
 	SetHandlers(...Handler)
@@ -28,8 +28,8 @@ type Handler interface {
 }
 
 func DefaultCheck(v Validator) error {
-	if v.IsEmpty() && v.IsRequired() == true {
-		return fmt.Errorf("%s::Value required.", v.String())
+	if v.IsEmpty() && v.isRequired() == true {
+		return fmt.Errorf("%s::Value required.", v.getString())
 	}
 
 	if v.IsEmpty() {
@@ -37,7 +37,7 @@ func DefaultCheck(v Validator) error {
 	}
 
 	for _, u := range v.GetHandlers() {
-		err := u.Handle(v.Value())
+		err := u.Handle(v.value())
 		if err != nil {
 			if _, ok := err.(TerminateLoop); ok {
 				break
@@ -48,11 +48,12 @@ func DefaultCheck(v Validator) error {
 	return nil
 }
 
-func NewHelper(val interface{}, typname string, handlers ...Handler) Helper {
+func NewDefaultHelper(val interface{}, typname string, handlers ...Handler) Helper {
 	return &helper{
 		val:      val,
 		typname:  typname,
 		handlers: handlers,
+		checker:  DefaultCheck,
 	}
 }
 
@@ -62,14 +63,16 @@ type helper struct {
 	required bool
 	meta     string
 	typname  string
+
 	handlers []Handler
+	checker  func(v Validator) error
 }
 
 func (s *helper) Check() error {
-	return DefaultCheck(s)
+	return s.checker(s)
 }
 
-func (s *helper) Value() interface{} {
+func (s *helper) value() interface{} {
 	return s.val
 }
 
@@ -77,7 +80,7 @@ func (s *helper) Name(name string) Validator {
 	s.meta = name
 	return s
 }
-func (s *helper) String() string {
+func (s *helper) getString() string {
 	if s.meta == "" {
 		s.meta = "NO_NAME_GIVEN -- Use Name()"
 	}
@@ -88,7 +91,7 @@ func (s *helper) Required() Validator {
 	s.required = true
 	return s
 }
-func (s *helper) IsRequired() bool {
+func (s *helper) isRequired() bool {
 	return s.required
 }
 
