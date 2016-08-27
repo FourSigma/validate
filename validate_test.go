@@ -1,7 +1,6 @@
 package validate
 
 import (
-	"errors"
 	"fmt"
 	"testing"
 
@@ -15,10 +14,13 @@ func TestCheckStringAPI(t *testing.T) {
 		if *s == "HELLO" {
 			return nil
 		}
-		return errors.New("Incorrect greeting!")
+
+		fmt.Println("HERE")
+		return nil
 	})
-	list = append(list, list...)
-	st := "Hello"
-	err := str.String(&st, list...).Append().Check()
-	fmt.Println(err)
+
+	st := "hello"
+	ss := str.String(&st, list...).Append(list...)
+	fmt.Println(ss.Check())
+
 }

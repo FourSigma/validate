@@ -2,7 +2,6 @@ package str
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/FourSigma/validate/lib"
 )
@@ -17,16 +16,26 @@ func (s HandlerFunc) Handle(i interface{}) error {
 	return s(str)
 }
 
-func String(s *string, handlers ...HandlerFunc) *str {
-	return &str{s: s, h: handlers}
+func ToHandlers(list ...HandlerFunc) []lib.Handler {
+	rs := make([]lib.Handler, len(list))
+	for i, v := range list {
+		rs[i] = lib.Handler(v)
+	}
+	return rs
+
+}
+
+func String(s *string, hf ...HandlerFunc) *str {
+	ss := &str{s: s, h: hf}
+	ss.Helper = lib.NewHelper(s, "String", ToHandlers(hf...)...)
+	return ss
 }
 
 //Implementation of Validator interface for string primitives.
 type str struct {
-	s        *string
-	h        []HandlerFunc
-	required bool
-	meta     string
+	s *string
+	h []HandlerFunc
+	lib.Helper
 }
 
 func (s *str) IsEmpty() bool {
@@ -36,44 +45,14 @@ func (s *str) IsEmpty() bool {
 	return false
 }
 
-func (s *str) Check() error {
-	return lib.DefaultCheck(s)
-}
-
-func (s *str) Value() interface{} {
-	return s.s
-}
-func (s *str) Prepend(b ...HandlerFunc) *str {
-	s.h = append(b, s.h...)
+func (s *str) Prepend(hf ...HandlerFunc) *str {
+	hdl := append(ToHandlers(hf...), s.GetHandlers()...)
+	s.SetHandlers(hdl...)
 	return s
 }
 
-func (s *str) Append(a ...HandlerFunc) *str {
-	s.h = append(s.h, a...)
+func (s *str) Append(hf ...HandlerFunc) *str {
+	hdl := append(s.GetHandlers(), ToHandlers(hf...)...)
+	s.SetHandlers(hdl...)
 	return s
-}
-
-func (s *str) Name(name string) lib.Validator {
-	s.meta = name
-	return s
-}
-func (s *str) String() string {
-	if s.meta == "" {
-		s.meta = "NO_NAME_ASSIGNED - Use Name()"
-	}
-	return fmt.Sprintf("%s::%s", "String", s.meta)
-}
-func (s *str) GetHandlers() []lib.Handler {
-	rs := make([]lib.Handler, len(s.h))
-	for i, v := range s.h {
-		rs[i] = lib.Handler(v)
-	}
-	return rs
-}
-func (s *str) Required() lib.Validator {
-	s.required = true
-	return s
-}
-func (s *str) IsRequired() bool {
-	return s.required
 }
