@@ -30,7 +30,7 @@ func MinLen(min int) HandlerFunc {
 func MaxLen(max int) HandlerFunc {
 	return func(ctx context.Context, s *string) error {
 		if len(*s) > max {
-			return fmt.Errorf("MaxLen: string %s has exceeded ")
+			return fmt.Errorf("MaxLen: string %s has exceeded max len %d", *s, max)
 		}
 		return nil
 

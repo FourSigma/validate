@@ -11,7 +11,7 @@ import (
 var list = []str.HandlerFunc{}
 
 func TestCheckStringAPI(t *testing.T) {
-	list = append(list, func(ctx context.Context, s *string) error {
+	list = append(list, str.MaxLen(2), func(ctx context.Context, s *string) error {
 		if *s == "HELLO" {
 			return nil
 		}
