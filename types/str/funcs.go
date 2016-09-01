@@ -3,6 +3,7 @@ package str
 import (
 	"context"
 	"fmt"
+	"strings"
 )
 
 type StringError struct {
@@ -34,5 +35,14 @@ func MaxLen(max int) HandlerFunc {
 		}
 		return nil
 
+	}
+}
+
+func Contains(substr string) HandlerFunc {
+	return func(ctx context.Context, s *string) error {
+		if yes := strings.Contains(*s, substr); yes != true {
+			return fmt.Errorf("Contains: string %s does not contain substring %s", *s, substr)
+		}
+		return nil
 	}
 }

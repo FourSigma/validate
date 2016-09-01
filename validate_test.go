@@ -5,20 +5,14 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/FourSigma/validate/lib"
 	"github.com/FourSigma/validate/types/str"
 )
 
-var list = []str.HandlerFunc{}
+var list = []lib.Handler{}
 
 func TestCheckStringAPI(t *testing.T) {
-	list = append(list, str.MaxLen(2), func(ctx context.Context, s *string) error {
-		if *s == "HELLO" {
-			return nil
-		}
-
-		fmt.Println("HERE")
-		return nil
-	})
+	list = append(list, str.MaxLen(10), str.Contains("h"))
 
 	st := "hello"
 	ctx := context.Background()
