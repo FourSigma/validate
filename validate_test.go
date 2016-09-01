@@ -1,6 +1,7 @@
 package validate
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -10,7 +11,7 @@ import (
 var list = []str.HandlerFunc{}
 
 func TestCheckStringAPI(t *testing.T) {
-	list = append(list, func(s *string) error {
+	list = append(list, func(ctx context.Context, s *string) error {
 		if *s == "HELLO" {
 			return nil
 		}
@@ -20,7 +21,8 @@ func TestCheckStringAPI(t *testing.T) {
 	})
 
 	st := "hello"
+	ctx := context.Background()
 	ss := str.String(&st, list...).Append(list...)
-	fmt.Println(ss.Check())
+	fmt.Println(ss.Check(ctx))
 
 }

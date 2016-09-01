@@ -1,19 +1,20 @@
 package str
 
 import (
+	"context"
 	"errors"
 
 	"github.com/FourSigma/validate/lib"
 )
 
-type HandlerFunc func(*string) error
+type HandlerFunc func(context.Context, *string) error
 
-func (s HandlerFunc) Handle(i interface{}) error {
+func (s HandlerFunc) Handle(ctx context.Context, i interface{}) error {
 	str, ok := i.(*string)
 	if !ok {
 		return errors.New("String::HandlerFunc::Cannot type assert, must be of type *string.")
 	}
-	return s(str)
+	return s(ctx, str)
 }
 
 func ToHandlers(list ...HandlerFunc) []lib.Handler {

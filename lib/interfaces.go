@@ -1,10 +1,14 @@
 package lib
 
-import "fmt"
-import . "github.com/FourSigma/validate/lib/misc/err"
+import (
+	"context"
+	"fmt"
+
+	. "github.com/FourSigma/validate/lib/misc/err"
+)
 
 type Checker interface {
-	Check() error
+	Check(context.Context) error
 }
 
 type Helper interface {
@@ -24,10 +28,10 @@ type Validator interface {
 }
 
 type Handler interface {
-	Handle(interface{}) error
+	Handle(context.Context, interface{}) error
 }
 
-func DefaultCheck(v Validator) error {
+func DefaultCheck(ctx context.Context, v Validator) error {
 	if v.IsEmpty() && v.isRequired() == true {
 		return fmt.Errorf("%s::Value required.", v.getString())
 	}
@@ -35,9 +39,8 @@ func DefaultCheck(v Validator) error {
 	if v.IsEmpty() {
 		return nil
 	}
-
 	for _, u := range v.GetHandlers() {
-		err := u.Handle(v.value())
+		err := u.Handle(ctx, v.value())
 		if err != nil {
 			if _, ok := err.(TerminateLoop); ok {
 				break
@@ -65,11 +68,11 @@ type helper struct {
 	typname  string
 
 	handlers []Handler
-	checker  func(v Validator) error
+	checker  func(context.Context, Validator) error
 }
 
-func (s *helper) Check() error {
-	return s.checker(s)
+func (s *helper) Check(ctx context.Context) error {
+	return s.checker(ctx, s)
 }
 
 func (s *helper) value() interface{} {

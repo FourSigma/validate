@@ -1,14 +1,15 @@
 package validate
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/FourSigma/validate/lib"
 )
 
-func Check(c ...lib.Checker) error {
+func Check(ctx context.Context, c ...lib.Checker) error {
 	for _, v := range c {
-		err := v.Check()
+		err := v.Check(ctx)
 		if err != nil {
 			return err
 		}
@@ -22,9 +23,9 @@ func And(sh ...lib.Handler) lib.Handler {
 
 type and []lib.Handler
 
-func (a and) Handle(i interface{}) error {
+func (a and) Handle(ctx context.Context, i interface{}) error {
 	for _, v := range a {
-		err := v.Handle(i)
+		err := v.Handle(ctx, i)
 		if err != nil {
 			return fmt.Errorf("AND error for type %v", i)
 		}
@@ -39,13 +40,12 @@ func Or(sh ...lib.Handler) lib.Handler {
 
 type or []lib.Handler
 
-func (a or) Handle(i interface{}) error {
+func (a or) Handle(ctx context.Context, i interface{}) error {
 	for _, v := range a {
-		err := v.Handle(i)
+		err := v.Handle(ctx, i)
 		if err == nil {
 			return nil
 		}
 	}
-
 	return fmt.Errorf("OR error for type %v", i)
 }
