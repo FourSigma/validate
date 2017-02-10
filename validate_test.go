@@ -2,21 +2,25 @@ package validate
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
-	"github.com/FourSigma/validate/lib"
 	"github.com/FourSigma/validate/types/str"
 )
 
-var list = []lib.Handler{}
+var myst = "hello"
 
-func TestCheckStringAPI(t *testing.T) {
-	list = append(list, str.MaxLen(10), str.Contains("h"))
+var list = []str.HandlerFunc{str.MaxLen(10), str.Contains(myst), str.Contains(myst), str.Contains(myst), str.Contains(myst)}
+
+func BenchmarkCheckStringAPI(b *testing.B) {
 
 	st := "hello"
 	ctx := context.Background()
-	ss := str.String(&st, list...).Append(list...)
-	fmt.Println(ss.Check(ctx))
+
+	var ss str.StringValidator
+	for i := 0; i < b.N; i++ {
+		ss = String(st).Validate(list...).Prepend(list...)
+		//fmt.Println(ss.Check(ctx))
+		ss.Check(ctx)
+	}
 
 }

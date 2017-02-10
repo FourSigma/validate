@@ -5,7 +5,14 @@ import (
 	"fmt"
 
 	"github.com/FourSigma/validate/lib"
+	"github.com/FourSigma/validate/types/str"
 )
+
+type String string
+
+func (s String) Validate(list ...str.HandlerFunc) str.StringValidator {
+	return str.NewStringValidator((*string)(&s), list...)
+}
 
 func Check(ctx context.Context, c ...lib.Checker) error {
 	for _, v := range c {

@@ -15,7 +15,7 @@ type Helper interface {
 	Checker
 	value() interface{}
 	getString() string
-	Name(string) Validator
+	Meta(string) Validator
 	isRequired() bool
 	Required() Validator
 	GetHandlers() []Handler
@@ -79,7 +79,7 @@ func (s *helper) value() interface{} {
 	return s.val
 }
 
-func (s *helper) Name(name string) Validator {
+func (s *helper) Meta(name string) Validator {
 	s.meta = name
 	return s
 }
