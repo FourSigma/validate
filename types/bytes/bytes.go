@@ -1,4 +1,4 @@
-package integer
+package bytes
 
 import (
 	"context"
@@ -17,7 +17,7 @@ func (s HandlerFunc) Handle(ctx context.Context, i interface{}) error {
 	return s(ctx, bytes)
 }
 
-func NewBytesValidator(s []bytes) *bytes {
+func NewBytesValidator(s []byte) *bytes {
 	return &bytes{
 		s:      s,
 		Helper: lib.NewDefaultHelper(s, "Bytes"),
@@ -32,7 +32,7 @@ type BytesValidator interface {
 
 //Implementation of Validator interface for float64 primitives.
 type bytes struct {
-	s []bytes
+	s []byte
 	lib.Helper
 }
 
