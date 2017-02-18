@@ -1,0 +1,31 @@
+# TODO for Validate
+
+
+Change the API to: 
+ 
+validate.Int64
+validate.Int32
+validate.Int16
+validate.Int8
+validate.UInt32
+validate.String *string
+validate.Bytes
+
+
+Validate implements the following interface. 
+
+type StringHandler func(context.Context, *string) error
+type Int32Handler func(context.Context, *int32) error
+type Int8Handler func(context.Context, *int8) error
+
+
+
+type String *string
+validate.String(&f.FirstName).Append(MaxLen(3))
+validate.String(&f.LastName).Append(MaxLen(3))
+validate.String(&f.Email).Append(ValidateDomain("@gmail.com"))
+func(context.Context, *string) StringHandler {}
+func(context.Context, *int32)  Int32Handler {}
+func(context.Context, *int8)   Int8Handler {}
+
+

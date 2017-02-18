@@ -11,16 +11,16 @@ var myst = "hello"
 
 var list = []str.HandlerFunc{str.MaxLen(10), str.Contains(myst), str.Contains(myst), str.Contains(myst), str.Contains(myst)}
 
-func BenchmarkCheckStringAPI(b *testing.B) {
+func TestString(tst *testing.T) {
 
-	st := "hello"
+	st := "hello12789"
 	ctx := context.Background()
 
 	var ss str.StringValidator
-	for i := 0; i < b.N; i++ {
-		ss = String(st).Validate(list...).Prepend(list...)
-		//fmt.Println(ss.Check(ctx))
-		ss.Check(ctx)
+	ss = String(st).Validate(list...).Prepend(list...)
+	err := ss.Check(ctx)
+	if err != nil {
+		tst.Error(err)
 	}
 
 }

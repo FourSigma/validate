@@ -39,6 +39,7 @@ func DefaultCheck(ctx context.Context, v Validator) error {
 	if v.IsEmpty() {
 		return nil
 	}
+
 	for _, u := range v.GetHandlers() {
 		err := u.Handle(ctx, v.value())
 		if err != nil {

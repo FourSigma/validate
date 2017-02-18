@@ -10,7 +10,6 @@ import (
 type HandlerFunc func(context.Context, *string) error
 
 func (s HandlerFunc) Handle(ctx context.Context, i interface{}) error {
-	//Type Assertion
 	str, ok := i.(*string)
 	if !ok {
 		return errors.New("String::HandlerFunc::Cannot type assert, must be of type *string.")
@@ -18,18 +17,11 @@ func (s HandlerFunc) Handle(ctx context.Context, i interface{}) error {
 	return s(ctx, str)
 }
 
-func ToHandlers(list ...HandlerFunc) []lib.Handler {
-	rs := make([]lib.Handler, len(list))
-	for i, v := range list {
-		rs[i] = lib.Handler(v)
+func NewStringValidator(s *string) *str {
+	return &str{
+		s:      s,
+		Helper: lib.NewDefaultHelper(s, "String"),
 	}
-	return rs
-}
-
-func NewStringValidator(s *string, hf ...HandlerFunc) *str {
-	ss := &str{s: s}
-	ss.Helper = lib.NewDefaultHelper(s, "String", ToHandlers(hf...)...)
-	return ss
 }
 
 type StringValidator interface {
@@ -40,8 +32,7 @@ type StringValidator interface {
 
 //Implementation of Validator interface for string primitives.
 type str struct {
-	s  *string
-	fn string //FieldName
+	s *string
 	lib.Helper
 }
 
@@ -53,13 +44,21 @@ func (s *str) IsEmpty() bool {
 }
 
 func (s *str) Prepend(hf ...HandlerFunc) StringValidator {
-	hdl := append(ToHandlers(hf...), s.GetHandlers()...)
+	hdl := append(s.toHandlers(hf...), s.GetHandlers()...)
 	s.SetHandlers(hdl...)
 	return s
 }
 
 func (s *str) Append(hf ...HandlerFunc) StringValidator {
-	hdl := append(s.GetHandlers(), ToHandlers(hf...)...)
+	hdl := append(s.GetHandlers(), s.toHandlers(hf...)...)
 	s.SetHandlers(hdl...)
 	return s
+}
+
+func (s *str) toHandlers(list ...HandlerFunc) []lib.Handler {
+	rs := make([]lib.Handler, len(list))
+	for i, v := range list {
+		rs[i] = lib.Handler(v)
+	}
+	return rs
 }
