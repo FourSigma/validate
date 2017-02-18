@@ -7,9 +7,9 @@ import (
 	"github.com/FourSigma/validate/types/integer"
 )
 
-type numFuncs struct{}
+type int64Funcs struct{}
 
-func (n *numFuncs) Max(max int64) integer.HandlerFunc {
+func (n *int64Funcs) Max(max int64) integer.HandlerFunc {
 	return func(ctx context.Context, i *int64) error {
 		if *i > max {
 
@@ -20,7 +20,7 @@ func (n *numFuncs) Max(max int64) integer.HandlerFunc {
 	}
 }
 
-func (n *numFuncs) Min(min int64) integer.HandlerFunc {
+func (n *int64Funcs) Min(min int64) integer.HandlerFunc {
 	return func(ctx context.Context, i *int64) error {
 		if *i < min {
 

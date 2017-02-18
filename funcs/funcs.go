@@ -1,7 +1,8 @@
 package funcs
 
 var String = &strFuncs{}
-var Number = &numFuncs{}
+var Int64 = &int64Funcs{}
+var UInt64 = &int64Funcs{}
 
 //var Bytes
 //var String
