@@ -1,11 +1,15 @@
-package integer
+package funcs
 
 import (
 	"context"
 	"fmt"
+
+	"github.com/FourSigma/validate/types/integer"
 )
 
-func Max(max int64) HandlerFunc {
+type numFuncs struct{}
+
+func (n *numFuncs) Max(max int64) integer.HandlerFunc {
 	return func(ctx context.Context, i *int64) error {
 		if *i > max {
 
@@ -16,7 +20,7 @@ func Max(max int64) HandlerFunc {
 	}
 }
 
-func Min(min int64) HandlerFunc {
+func (n *numFuncs) Min(min int64) integer.HandlerFunc {
 	return func(ctx context.Context, i *int64) error {
 		if *i < min {
 
