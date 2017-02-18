@@ -1,9 +1,11 @@
-package str
+package funcs
 
 import (
 	"context"
 	"fmt"
 	"strings"
+
+	"github.com/FourSigma/validate/types/str"
 )
 
 type StringError struct {
@@ -15,11 +17,11 @@ func (s StringError) Error() string {
 	return fmt.Sprintf("StringError::%s %s", s.funcName, s.input)
 }
 
-func NewStringError(funcName string, input interface{}, list ...interface{}) {
-	return
-}
+var String = &strFuncs{}
 
-func MinLen(min int) HandlerFunc {
+type strFuncs struct{}
+
+func (s *strFuncs) MinLen(min int) str.HandlerFunc {
 	return func(ctx context.Context, s *string) error {
 		if len(*s) < min {
 			return fmt.Errorf("MinLen: string %s does meet min length %d", *s, min)
@@ -28,7 +30,8 @@ func MinLen(min int) HandlerFunc {
 		return nil
 	}
 }
-func MaxLen(max int) HandlerFunc {
+
+func (s *strFuncs) MaxLen(max int) str.HandlerFunc {
 	return func(ctx context.Context, s *string) error {
 		if len(*s) > max {
 			return fmt.Errorf("MaxLen: string %s has exceeded max len %d", *s, max)
@@ -38,7 +41,7 @@ func MaxLen(max int) HandlerFunc {
 	}
 }
 
-func Contains(substr string) HandlerFunc {
+func (s *strFuncs) Contains(substr string) str.HandlerFunc {
 	return func(ctx context.Context, s *string) error {
 		if yes := strings.Contains(*s, substr); yes != true {
 			return fmt.Errorf("Contains: string %s does not contain substring %s", *s, substr)
