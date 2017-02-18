@@ -1,4 +1,4 @@
-package integer
+package float
 
 import (
 	"context"
