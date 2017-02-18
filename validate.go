@@ -11,14 +11,6 @@ import (
 	"github.com/FourSigma/validate/types/str"
 )
 
-type ValidationTypeId string
-
-var valdationRegistry = map[ValidationTypeId]func(context.Context) error{}
-
-func RegisterValidator(id ValidationTypeId, fn lib.Checker) {
-
-}
-
 type String string
 
 func (s String) Validate(list ...str.HandlerFunc) str.StringValidator {
