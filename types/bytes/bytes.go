@@ -17,6 +17,16 @@ func (s HandlerFunc) Handle(ctx context.Context, i interface{}) error {
 	return s(ctx, bytes)
 }
 
+type HandlerFuncList []HandlerFunc
+
+func (s HandlerFuncList) ToHandlers() []lib.Handler {
+	rs := make([]lib.Handler, len(s))
+	for i, v := range s {
+		rs[i] = lib.Handler(v)
+	}
+	return rs
+}
+
 func NewBytesValidator(s []byte) *bytes {
 	return &bytes{
 		s:      s,
@@ -44,20 +54,13 @@ func (s *bytes) IsEmpty() bool {
 }
 
 func (s *bytes) Prepend(hf ...HandlerFunc) BytesValidator {
-	hdl := append(s.toHandlers(hf...), s.GetHandlers()...)
+	hdl := append(HandlerFuncList(hf).ToHandlers(), s.GetHandlers()...)
 	s.SetHandlers(hdl...)
 	return s
 }
 
 func (s *bytes) Append(hf ...HandlerFunc) BytesValidator {
-	hdl := append(s.GetHandlers(), s.toHandlers(hf...)...)
+	hdl := append(s.GetHandlers(), HandlerFuncList(hf).ToHandlers()...)
 	s.SetHandlers(hdl...)
 	return s
-}
-func (s *bytes) toHandlers(list ...HandlerFunc) []lib.Handler {
-	rs := make([]lib.Handler, len(list))
-	for i, v := range list {
-		rs[i] = lib.Handler(v)
-	}
-	return rs
 }

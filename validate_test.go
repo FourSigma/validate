@@ -4,22 +4,17 @@ import (
 	"context"
 	"testing"
 
-	"github.com/FourSigma/validate"
+	fn "github.com/FourSigma/validate/funcs"
 	"github.com/FourSigma/validate/types/str"
-	. "github.com/FourSigma/validate/types/str/funcs"
 )
 
 var myst = "hello"
 
 var list = []str.HandlerFunc{
-	String.MaxLen(10),
-	validate.OR(
-		String.Contains(myst),
-		String.Contains(myst),
-	),
-	validate.XOR(
-		String.MinLen(10),
-		String.MaxLen(100),
+	fn.String.MaxLen(10),
+	OR(
+		fn.String.Contains(myst),
+		fn.String.Contains(myst),
 	),
 	fn.String.Contains(myst),
 	fn.String.Contains(myst),
@@ -27,7 +22,7 @@ var list = []str.HandlerFunc{
 
 func TestString(tst *testing.T) {
 
-	st := "hello12789"
+	st := "hello12789fffffffff"
 	ctx := context.Background()
 
 	var ss str.StringValidator

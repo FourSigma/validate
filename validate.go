@@ -73,10 +73,10 @@ func Check(ctx context.Context, c ...lib.Checker) error {
 	return nil
 }
 
-func And(sh ...lib.Handler) lib.Handler {
+func AND(sh ...lib.Handler) lib.Handler {
 	return logic.NewAnd(sh...)
 }
 
-func Or(sh ...lib.Handler) lib.Handler {
+func OR(sh ...lib.Handler) lib.Handler {
 	return logic.NewOr(sh...)
 }

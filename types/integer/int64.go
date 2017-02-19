@@ -17,6 +17,16 @@ func (s HandlerFunc) Handle(ctx context.Context, i interface{}) error {
 	return s(ctx, integer64)
 }
 
+type HandlerFuncList []HandlerFunc
+
+func (s HandlerFuncList) ToHandlers() []lib.Handler {
+	rs := make([]lib.Handler, len(s))
+	for i, v := range s {
+		rs[i] = lib.Handler(v)
+	}
+	return rs
+}
+
 func NewInt64Validator(s *int64) *int64Integer {
 	return &int64Integer{
 		s:      s,
@@ -44,20 +54,13 @@ func (s *int64Integer) IsEmpty() bool {
 }
 
 func (s *int64Integer) Prepend(hf ...HandlerFunc) Int64Validator {
-	hdl := append(s.toHandlers(hf...), s.GetHandlers()...)
+	hdl := append(HandlerFuncList(hf).ToHandlers(), s.GetHandlers()...)
 	s.SetHandlers(hdl...)
 	return s
 }
 
 func (s *int64Integer) Append(hf ...HandlerFunc) Int64Validator {
-	hdl := append(s.GetHandlers(), s.toHandlers(hf...)...)
+	hdl := append(s.GetHandlers(), HandlerFuncList(hf).ToHandlers()...)
 	s.SetHandlers(hdl...)
 	return s
-}
-func (s *int64Integer) toHandlers(list ...HandlerFunc) []lib.Handler {
-	rs := make([]lib.Handler, len(list))
-	for i, v := range list {
-		rs[i] = lib.Handler(v)
-	}
-	return rs
 }

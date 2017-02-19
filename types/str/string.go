@@ -17,6 +17,16 @@ func (s HandlerFunc) Handle(ctx context.Context, i interface{}) error {
 	return s(ctx, str)
 }
 
+type HandlerFuncList []HandlerFunc
+
+func (s HandlerFuncList) ToHandlers() []lib.Handler {
+	rs := make([]lib.Handler, len(s))
+	for i, v := range s {
+		rs[i] = lib.Handler(v)
+	}
+	return rs
+}
+
 func NewStringValidator(s *string) *str {
 	return &str{
 		s:      s,
@@ -44,21 +54,13 @@ func (s *str) IsEmpty() bool {
 }
 
 func (s *str) Prepend(hf ...HandlerFunc) StringValidator {
-	hdl := append(s.toHandlers(hf...), s.GetHandlers()...)
+	hdl := append(HandlerFuncList(hf).ToHandlers(), s.GetHandlers()...)
 	s.SetHandlers(hdl...)
 	return s
 }
 
 func (s *str) Append(hf ...HandlerFunc) StringValidator {
-	hdl := append(s.GetHandlers(), s.toHandlers(hf...)...)
+	hdl := append(s.GetHandlers(), HandlerFuncList(hf).ToHandlers()...)
 	s.SetHandlers(hdl...)
 	return s
-}
-
-func (s *str) toHandlers(list ...HandlerFunc) []lib.Handler {
-	rs := make([]lib.Handler, len(list))
-	for i, v := range list {
-		rs[i] = lib.Handler(v)
-	}
-	return rs
 }

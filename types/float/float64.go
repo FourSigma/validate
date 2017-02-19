@@ -10,15 +10,24 @@ import (
 type HandlerFunc func(context.Context, *float64) error
 
 func (s HandlerFunc) Handle(ctx context.Context, i interface{}) error {
-	integer64, ok := i.(*float64)
+	flt64, ok := i.(*float64)
 	if !ok {
 		return errors.New("::HandlerFunc::Cannot type assert, must be of type *float64.")
 	}
-	return s(ctx, integer64)
+	return s(ctx, flt64)
 }
 
-func NewFloat64Validator(s *float64) *float64Integer {
-	return &float64Integer{
+type HandlerFuncList []HandlerFunc
+
+func (s HandlerFuncList) ToHandlers() []lib.Handler {
+	rs := make([]lib.Handler, len(s))
+	for i, v := range s {
+		rs[i] = lib.Handler(v)
+	}
+	return rs
+}
+func NewFloat64Validator(s *float64) *float64Number {
+	return &float64Number{
 		s:      s,
 		Helper: lib.NewDefaultHelper(s, "Float64"),
 	}
@@ -31,33 +40,26 @@ type Float64Validator interface {
 }
 
 //Implementation of Validator interface for float64 primitives.
-type float64Integer struct {
+type float64Number struct {
 	s *float64
 	lib.Helper
 }
 
-func (s *float64Integer) IsEmpty() bool {
+func (s *float64Number) IsEmpty() bool {
 	if *s.s == 0 {
 		return true
 	}
 	return false
 }
 
-func (s *float64Integer) Prepend(hf ...HandlerFunc) Float64Validator {
-	hdl := append(s.toHandlers(hf...), s.GetHandlers()...)
+func (s *float64Number) Prepend(hf ...HandlerFunc) Float64Validator {
+	hdl := append(HandlerFuncList(hf).ToHandlers(), s.GetHandlers()...)
 	s.SetHandlers(hdl...)
 	return s
 }
 
-func (s *float64Integer) Append(hf ...HandlerFunc) Float64Validator {
-	hdl := append(s.GetHandlers(), s.toHandlers(hf...)...)
+func (s *float64Number) Append(hf ...HandlerFunc) Float64Validator {
+	hdl := append(s.GetHandlers(), HandlerFuncList(hf).ToHandlers()...)
 	s.SetHandlers(hdl...)
 	return s
-}
-func (s *float64Integer) toHandlers(list ...HandlerFunc) []lib.Handler {
-	rs := make([]lib.Handler, len(list))
-	for i, v := range list {
-		rs[i] = lib.Handler(v)
-	}
-	return rs
 }
