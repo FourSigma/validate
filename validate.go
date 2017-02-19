@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/FourSigma/validate/lib"
-	"github.com/FourSigma/validate/lib/logic"
 	"github.com/FourSigma/validate/types/bytes"
 	"github.com/FourSigma/validate/types/float"
 	"github.com/FourSigma/validate/types/integer"
@@ -21,6 +20,13 @@ type Bytes []byte
 
 func (s Bytes) Validate(list ...bytes.HandlerFunc) bytes.BytesValidator {
 	return bytes.NewBytesValidator(s).Append(list...)
+}
+
+type Int int
+
+func (s Int) Validate(list ...integer.HandlerFunc) integer.Int64Validator {
+	f := int64(s)
+	return integer.NewInt64Validator(&f).Append(list...)
 }
 
 type Int8 int8
@@ -71,12 +77,4 @@ func Check(ctx context.Context, c ...lib.Checker) error {
 		}
 	}
 	return nil
-}
-
-func AND(sh ...lib.Handler) lib.Handler {
-	return logic.NewAnd(sh...)
-}
-
-func OR(sh ...lib.Handler) lib.Handler {
-	return logic.NewOr(sh...)
 }
